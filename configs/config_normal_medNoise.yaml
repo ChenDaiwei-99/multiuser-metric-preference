@@ -1,0 +1,28 @@
+save_root: './'
+exp_name: normal_noisy1bit_medNoise
+n_cores: 30
+methods:
+- nucfull
+- nucM_l2v
+- nucM_nucV
+- frobM_l2v
+- psdM
+- nucfull_single
+pm:
+    fun: normal_noisy1bit
+    T: 1 # number of trials
+    d: 10 # ambient dimension
+    rstart: 1 # smallest rank to test (null for full rank)
+    rstop: 10 # largest rank to test (inclusive). null to continue until ambient dimension
+    rstep: 9 # increment to sweep ranks
+    n: 100
+    N: 10 # number of users
+    noise_type: logistic # noise type
+    noise_param: 4 # noise parameter
+    train_frac: 0.5 # train/test split fraction, specifically equal to # train points / total data
+    n_splits: 5 # k-fold number of splits (defunct)
+    loss_fun: logistic # loss function for ERM
+    use_oracle: True # use oracle hyperparameters
+    hyper_sweep: [] # (relative) hyperparameter magnitudes for hyperparameter sweep
+    m_train: 300 # number of training comparisons per user
+    m_train_res: 30

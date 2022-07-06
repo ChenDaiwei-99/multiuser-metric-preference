@@ -1,0 +1,16 @@
+save_root: './'
+exp_name: color_experiment_N48
+n_cores: 30
+methods:
+- frobM_l2v
+- I_l2v
+- frobM_l2v_single
+pm:
+    fun: color_experiment
+    T: 1 # number of trials
+    N: 48 # number of users
+    n_splits: 5 # k-fold number of splits
+    loss_fun: hinge # loss function for ERM
+    hyper_sweep: [] # (relative) hyperparameter magnitudes for hyperparameter sweep
+    m_train: 300 # number of training comparisons per user
+    m_train_res: 5
