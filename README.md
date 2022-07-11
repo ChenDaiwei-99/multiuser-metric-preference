@@ -1,5 +1,7 @@
 # One for All: Simultaneous Metric and Preference Learning over Multiple Users
 
+Paper code for "[One for All: Simultaneous Metric and Preference Learning over Multiple Users](https://arxiv.org/pdf/2207.03609.pdf)"
+
 ## Requirements
 - Python 3.9.7
 - cvxpy 1.2.0
