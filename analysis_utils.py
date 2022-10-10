@@ -16,7 +16,7 @@ import math
 
 plot_labels_color = {'frobM_l2v': 'Learned M, crowd',
                 'I_l2v': 'Identity M',
-                'frobM_l2v_single': 'Learned M, single'}
+                'frobM_l2v_single': 'Learned M, individual'}
 
 plot_labels_normal = {'nucfull': 'Nuclear full',
                 'nucM_l2v': 'Nuclear metric',
