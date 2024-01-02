@@ -1,6 +1,6 @@
-save_root: './save/'
-exp_name: color_experiment_N48
-n_cores: 30
+save_root: './save_torch_test/'
+exp_name: color_experiment_N48_torch
+n_cores: 1
 methods:
 - frobM_l2v
 - I_l2v

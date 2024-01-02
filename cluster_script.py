@@ -16,28 +16,30 @@ import numpy as np
 import yaml
 import argparse
 
-parser = argparse.ArgumentParser(DESCRIPTION)
-parser.add_argument('--config', type=str, help='Configuration file path (.yaml)')
-args = parser.parse_args()
+if __name__ == '__main__':
+    
+    parser = argparse.ArgumentParser(DESCRIPTION)
+    parser.add_argument('--config', type=str, help='Configuration file path (.yaml)')
+    args = parser.parse_args()
 
-# load config
-with open(args.config) as f:
-    config = yaml.safe_load(f)
+    # load config
+    with open(args.config) as f:
+        config = yaml.safe_load(f)
 
-save_root = config['save_root']
-exp_name = config['exp_name']
-n_cores = config['n_cores']
-pm = config['pm']
-methods = config['methods']
+    save_root = config['save_root']
+    exp_name = config['exp_name']
+    n_cores = config['n_cores']
+    pm = config['pm']
+    methods = config['methods']
 
-# setup seeding
-now_ms = round(time.time() * 100)
-np.random.seed(now_ms % 2**32)
+    # setup seeding
+    now_ms = round(time.time() * 100)
+    np.random.seed(now_ms % 2**32)
 
-# set parameters
-params = [(pm, methods, '{}_{}_{}'.format(save_root + exp_name, now_ms, i),
-           np.random.randint(2**31)) for i in range(n_cores)]
+    # set parameters
+    params = [(pm, methods, '{}_{}_{}'.format(save_root + exp_name, now_ms, i),
+            np.random.randint(2**31)) for i in range(n_cores)]
 
-# run on cores
-pool = mp.Pool(n_cores)
-pool.starmap(run_experiment, params)
+    # run on cores
+    pool = mp.Pool(n_cores)
+    pool.starmap(run_experiment, params)

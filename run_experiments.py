@@ -612,7 +612,7 @@ def color_experiment(pm, methods=['frobM_l2v', 'I_l2v', 'frobM_l2v_single'], sav
 
     # initialize results data
     if 'frobM_l2v_single' in methods:
-        n_grouped_methods = len(methods)-1
+        n_grouped_methods = len(methods)-1  # FIXME: why?
     else:
         n_grouped_methods = len(methods)
 
@@ -640,8 +640,11 @@ def color_experiment(pm, methods=['frobM_l2v', 'I_l2v', 'frobM_l2v_single'], sav
             logging.info('Trial {} / {}'.format(ti+1, pm['T']))
 
         # load color data
+        # color_dataset = dataset.Dataset(dataset_type='Color',
+        #     color_path='../data/CPdata.mat', N=N)
+        # FIXME: change the color_path by daiwei
         color_dataset = dataset.Dataset(dataset_type='Color',
-            color_path='../data/CPdata.mat', N=N)
+            color_path='./CPdata.mat', N=N)
 
         data = color_dataset.getAllData()
         X = data['X']
@@ -651,7 +654,8 @@ def color_experiment(pm, methods=['frobM_l2v', 'I_l2v', 'frobM_l2v_single'], sav
 
         S_train, S_test, Y_train, Y_test = color_dataset.getTrainTestSplit(
             train_size = m_train * N)
-
+        
+        # FIXME: substitute these methods by pytorch version
         method_idx = -1
         if 'frobM_l2v' in methods:
             method_idx += 1
@@ -903,7 +907,7 @@ def color_metrics(Mtrue, model, X, S, Y):
         'test_accuracy': metrics.prediction_accuracy(model=model, X=X, S=S, Y=Y)
     }
 
-    
+
 def run_experiment(pm, methods, save_root=None, seed=None):
     # pm: experiment parameters
     # methods: list of methods to evaluate (must be in code order)
