@@ -5,7 +5,6 @@ import math
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-
 # system related packages
 from joblib import Parallel, delayed
 from tqdm import tqdm
@@ -182,5 +181,6 @@ def _per_run(num_pairs_per_user):
 
 if __name__ == '__main__':
 
-    num_pairs_per_user_list = np.arange(0,700,25)
-    results = Parallel(n_jobs=16)(delayed(_per_run)(*i) for i in num_pairs_per_user_list)
+    num_pairs_per_user_list = np.arange(25,700,25)
+    results = Parallel(n_jobs=16)(delayed(_per_run)(i) for i in num_pairs_per_user_list)
+    
