@@ -207,7 +207,7 @@ def train_main(args, normal_dataset):
 def _per_run(args, normal_dataset):
     print('current params:', args)
     train_stats, learner = train_main(args, normal_dataset)
-    torch.save({'args':args, 'train_stats':train_stats, 'learner':learner}, f'./save_normal_metric_check/metric_check_num_pairs_per_user{num_pairs_per_user}.pt')
+    torch.save({'args':args, 'train_stats':train_stats, 'learner':learner}, f'./save_normal_metric_check/metric_check_num_pairs_per_user{args["num_pairs_per_user"]}.pt')
 
 
 if __name__ == '__main__':
@@ -217,7 +217,7 @@ if __name__ == '__main__':
         'num_items': 100,
         'num_users': 10,
     }
-    
+
     normal_dataset = get_dataset(args)
 
     args_list = []
