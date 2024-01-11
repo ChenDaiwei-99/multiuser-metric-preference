@@ -13,7 +13,7 @@ def _per_run(num_groups):
     metric_rank = 10
     num_items = 100
     num_users = 100
-    num_pairs_per_user = 2000
+    num_pairs_per_user = 1000
     noise_type = 'logistic'
     noise_beta = 1
     num_groups = num_groups
@@ -38,7 +38,7 @@ def _per_run(num_groups):
             'metric_rank': metric_rank,
             'num_items': num_items,
             'num_users': num_users,
-            'num_pairs_per_user': 1000,
+            'num_pairs_per_user': 500,
             'noise_type': noise_type,
             'noise_beta': noise_beta,
             'num_groups': num_groups,
@@ -52,5 +52,5 @@ def _per_run(num_groups):
 
 
 if __name__ == '__main__':
-    results = Parallel(n_jobs=16)(delayed(_per_run)(num_groups) for num_groups in tqdm(range(55,101,5)))
+    results = Parallel(n_jobs=8)(delayed(_per_run)(num_groups) for num_groups in tqdm(range(5,51,5)))
     

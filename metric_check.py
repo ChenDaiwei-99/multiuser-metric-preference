@@ -145,7 +145,7 @@ def get_dataset(args):
                                     noise_param=pms['noise_param'], X=None)
     return normal_dataset
 
-def train_main(args, normal_dataset):
+def train_main(args, normal_dataset, relative_error_ind=True):
     ########### hyperparameters for the dataset ################
     feature_dim = args['feature_dim']
     metric_rank = args['metric_rank']
@@ -200,7 +200,7 @@ def train_main(args, normal_dataset):
 
     # important modification: record the metric error
     train_stats = train(learner, optimizer, loss_fn, train_dataloader, test_dataloader, epochs, 
-                        relative_error_ind=True, true_M=true_M, true_u=true_u)
+                        relative_error_ind=relative_error_ind, true_M=true_M, true_u=true_u)
 
     return train_stats, learner
 
