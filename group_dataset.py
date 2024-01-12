@@ -2,6 +2,7 @@
 
 import numpy as np
 import scipy.stats as st
+from sympy import N
 import utils
 from sklearn.model_selection import train_test_split
 import scipy.io as sio
@@ -60,7 +61,7 @@ class Dataset:
         #    DEFAULTS_DICT *must* match inputs to self._INITIALIZATION_FUNCTION
         dataset_types = {'Normal': (self._normal_init, {'d': 2, 'r': 2, 'n': 100,
                                    'N': 3, 'm':30, 'noise_type':'none', 'noise_param':None,
-                                   'X':None}),
+                                   'X':None, 'num_groups':None}),
                          'Color': (self._color_init, {'color_path':'./CPdata.mat', 'N':None})}
         self.init_fun, defaults = dataset_types[dataset_type]
 
@@ -184,7 +185,7 @@ class Dataset:
         self.Y = Y
         self.raw = {'SingPrefAFCload':SingPrefAFCload, 'user_ids':user_ids}
         
-    def _normal_init(self, d, r, n, N, m, noise_type, noise_param, X=None, num_groups=1):
+    def _normal_init(self, d, r, n, N, m, noise_type, noise_param, X=None, num_groups=None):
         '''
         Desc: Generates normally distributed data along with ground-truth metric and user points (Refer to the original code)
 
@@ -198,7 +199,7 @@ class Dataset:
             noise_beta: noise level
             num_groups: number of subgroups
         '''
-
+        assert num_groups != 1, 'number of groups should larger than 1'
         feature_dim = d
         metric_rank = r
         num_items = n
@@ -224,7 +225,7 @@ class Dataset:
         self.M = M
         
         # generate user points (methods depend on the size of the num_groups)
-        if num_groups == 1:
+        if not num_groups:
             # original code
             U = np.random.multivariate_normal(np.zeros(feature_dim), (1/feature_dim)*np.eye(feature_dim), num_users).T
             self.U = U
