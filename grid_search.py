@@ -114,7 +114,9 @@ def train_main(args):
     ########### hyperparameters from args ################
     epochs = args['epochs']
     bs = args['bs']
-    lr = args['lr']
+    # lr = args['lr']
+    lr_us = args['lr_us']
+    lr_net = args['lr_net']
     feature_dim = args['feature_dim']
     num_users = args['num_users']  # fixed at 48 for color dataset 
     num_pairs_per_user = args['num_pairs_per_user']
@@ -165,24 +167,26 @@ def train_main(args):
 
     ############ define loss and optimizer ################
     weight_decay_dic = [
-        {'params': us_params, 'weight_decay': weight_decay_us},
-        {'params': net_params, 'weight_decay': weight_decay_net}
+        {'params': us_params, 'weight_decay': weight_decay_us, 'lr': lr_us},
+        {'params': net_params, 'weight_decay': weight_decay_net, 'lr': lr_net}
     ]
 
     loss_fn = hinge_loss
     if optimizer_name == 'adam':
-        optimizer = torch.optim.Adam(weight_decay_dic, lr=lr, betas=(0.9, 0.999), eps=1e-8)
+        optimizer = torch.optim.Adam(weight_decay_dic, betas=(0.9, 0.999), eps=1e-8)
     elif optimizer_name == 'sgd':
-        optimizer = torch.optim.SGD(weight_decay_dic, lr=lr, momentum=0.9)
+        optimizer = torch.optim.SGD(weight_decay_dic, momentum=0.9)
     train_stats = train(learner, optimizer, loss_fn, train_dataloader, test_dataloader, epochs, relative_error_ind=False)
     
     return train_stats, learner
 
-def _per_run(lr, bs, weight_decay_us, weight_decay_net, optimizer_name):
+def _per_run(lr_us, lr_net, bs, weight_decay_us, weight_decay_net, optimizer_name):
     args = {
-        'epochs': 2000,
+        'epochs': 200,
         'bs': bs,
-        'lr': lr,
+        # 'lr': lr,
+        'lr_us': lr_us,
+        'lr_net': lr_net,
         'feature_dim': 3,
         'num_users': 48,
         'num_pairs_per_user': 300,
@@ -191,18 +195,23 @@ def _per_run(lr, bs, weight_decay_us, weight_decay_net, optimizer_name):
         'optimizer_name': optimizer_name,
     }
     print('current params:', args)
+
     train_stats, learner = train_main(args)
-    torch.save({'args':args, 'train_stats': train_stats, 'learner': learner}, f'./save/grid_search_lr{lr}_bs{bs}_wdu{weight_decay_us}_wdn{weight_decay_net}_opt{optimizer_name}.pt')
+    torch.save({'args':args, 'train_stats': train_stats, 'learner': learner}, f'./save/grid_search_lrus{lr_us}_lrnet{lr_net}_bs{bs}_wdu{weight_decay_us}_wdn{weight_decay_net}_opt{optimizer_name}.pt')
 
 
 if __name__ == '__main__':
 
-    lr_list = [1e-2,5e-3,1e-3,5e-4,1e-4]
-    bs_list = [16,32,64,128]
+    lr_list_us = [5e-3,1e-3,5e-4,1e-4]
+    lr_list_net = [5e-3,1e-3,5e-4,1e-4]
+    # lr_list = [0.005]
+    # bs_list = [16,32,64,128]
+    bs_list = [64]
     weight_decay_us_list = [1e-3,1e-4,0]
-    weight_decay_net_list = [1e-3,1e-4,0]
-    optimizer_name_list = ['adam', 'sgd']
+    weight_decay_net_list = [1e-1,1e-2,1e-3,1e-4,0]
+    optimizer_name_list = ['adam']
 
-    param_combinations = list(itertools.product(lr_list, bs_list, weight_decay_us_list, weight_decay_net_list, optimizer_name_list))
+
+    param_combinations = list(itertools.product(lr_list_us, lr_list_net, bs_list, weight_decay_us_list, weight_decay_net_list, optimizer_name_list))
 
     results = Parallel(n_jobs=16)(delayed(_per_run)(*i) for i in param_combinations)

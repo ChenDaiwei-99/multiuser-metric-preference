@@ -2,7 +2,6 @@
 
 import numpy as np
 import scipy.stats as st
-from sympy import N
 import utils
 from sklearn.model_selection import train_test_split
 import scipy.io as sio
