@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 class MetricPrefLearner(nn.Module):
     
@@ -46,13 +47,19 @@ class MetricPrefLearner_groups(nn.Module):
         self.num_users = num_users
         self.items = items
         self.num_groups = num_groups
-        assert num_groups != 1, 'number of groups should larger than 1'
+        # assert num_groups != 1, 'number of groups should larger than 1'
 
         # two different modeling methods (depend on the num_groups)
         if self.num_groups == None:
-            self.us = nn.Parameter(torch.randn((self.dim_feature, self.num_users)))
-        elif self.num_groups > 1:
-            self.us_groups = nn.Parameter(torch.randn((self.dim_feature, self.num_groups)))
+            # self.us = nn.Parameter(torch.randn((self.dim_feature, self.num_users)))
+            self.us = nn.Parameter(
+                torch.tensor(np.random.multivariate_normal(np.zeros(self.dim_feature),(1/self.dim_feature)*np.eye(self.dim_feature),self.num_users).T).float()
+            )
+        elif self.num_groups >= 1:
+            # self.us_groups = nn.Parameter(torch.randn((self.dim_feature, self.num_groups)))
+            self.us_groups = nn.Parameter(
+                torch.tensor(np.random.multivariate_normal(np.zeros(self.dim_feature),(1/self.dim_feature)*np.eye(self.dim_feature),self.num_groups).T).float()
+            )
             self.unconstrained_weights = nn.Parameter(torch.randn((self.num_groups, self.num_users)))   # this is unconstrained weights, need to use softmax function to normalize it into probabilities
             self.softmax = nn.Softmax(dim=0)    # alongside the num_groups dimension
 
@@ -74,6 +81,7 @@ class MetricPrefLearner_groups(nn.Module):
             us_k_track =self.us[:,user_ids]
         else:
             us_probs = self.softmax(self.unconstrained_weights[:,user_ids])
+            # print(self.us_groups)
             us_k_track = self.us_groups @ us_probs
         x_is_minus_us = (x_is - us_k_track).T
         x_js_minus_us = (x_js - us_k_track).T
